@@ -1,9 +1,8 @@
-<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>KT CS Prestige Partners Mall | 법인 임직원 파트너스몰 견적 시스템</title>
+    <title>KT CS Prestige Partners Mall | 프랜차이즈 매장 창업 & 임직원 파트너스몰</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -41,13 +40,13 @@
             <div class="text-center mb-5">
                 <span class="bg-red-600 text-white font-extrabold text-xs px-2.5 py-1 rounded">KT CS</span>
                 <h2 class="text-2xl font-extrabold text-slate-900 mt-2.5">프레스티지 파트너스 몰</h2>
-                <p class="text-xs text-slate-500 mt-1">제휴 법인명과 발급받은 파트너스 보안 PASS를 입력하세요.</p>
+                <p class="text-xs text-slate-500 mt-1">제휴 법인/브랜드명과 발급받은 파트너스 보안 PASS를 입력하세요.</p>
             </div>
 
             <div class="space-y-3.5">
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">제휴 법인(회사)명</label>
-                    <input type="text" id="auth-corp" placeholder="등록된 제휴 법인명을 입력하세요" class="w-full bg-slate-50 border rounded-lg p-3 text-sm focus:ring-2 focus:ring-red-500 outline-none">
+                    <label class="block text-xs font-bold text-slate-700 mb-1">제휴 법인 / 프랜차이즈 본사명</label>
+                    <input type="text" id="auth-corp" placeholder="등록된 제휴사명을 입력하세요 (예: 메가커피)" class="w-full bg-slate-50 border rounded-lg p-3 text-sm focus:ring-2 focus:ring-red-500 outline-none">
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">파트너스 보안 PASS</label>
@@ -65,7 +64,7 @@
 
             <div class="mt-4 pt-3 border-t text-center">
                 <button type="button" onclick="toggleModal(true)" class="text-xs font-bold text-slate-700 hover:text-red-600 underline cursor-pointer p-1">
-                    신규 법인 제휴 및 PASS 발급 신청
+                    신규 법인/프랜차이즈 제휴 및 PASS 발급 신청
                 </button>
             </div>
 
@@ -82,19 +81,19 @@
         </div>
     </div>
 
-    <!-- 2. 신규 법인 제휴 신청 모달 -->
+    <!-- 2. 신규 제휴 신청 모달 -->
     <div id="apply-modal" class="fixed inset-0 bg-black/80 z-[60] hidden items-center justify-center p-4">
         <div class="bg-white max-w-lg w-full rounded-2xl shadow-2xl p-6 space-y-4 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center border-b pb-3">
-                <h3 class="text-base sm:text-lg font-bold text-slate-900">신규 법인 제휴 및 파트너스 PASS 발급 신청</h3>
+                <h3 class="text-base sm:text-lg font-bold text-slate-900">신규 제휴 및 파트너스 PASS 발급 신청</h3>
                 <button type="button" onclick="toggleModal(false)" class="text-slate-400 hover:text-slate-600 text-lg cursor-pointer p-1">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
             <div class="space-y-3">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">신청 법인(기업)명</label>
-                    <input type="text" id="req-corp" placeholder="예: 제휴 신청 기업명" class="w-full bg-slate-50 border rounded-lg p-2.5 text-xs outline-none">
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">신청 프랜차이즈 / 법인명</label>
+                    <input type="text" id="req-corp" placeholder="예: (주)한국프랜차이즈 본사 또는 가맹점명" class="w-full bg-slate-50 border rounded-lg p-2.5 text-xs outline-none">
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <div>
@@ -126,11 +125,9 @@
                     <span class="text-sm sm:text-lg font-extrabold tracking-tight">Prestige Partners <span class="text-red-600">Mall</span></span>
                 </div>
                 <div class="flex items-center space-x-1.5 sm:space-x-2">
-                    <!-- 담당센터 직통 전화 연결 버튼 -->
                     <a href="tel:010-8290-9971" class="text-[11px] font-bold text-white bg-slate-900 hover:bg-slate-800 border border-slate-700 px-2.5 py-1 rounded-full flex items-center transition shadow-sm">
                         <i class="fa-solid fa-phone-volume mr-1 text-emerald-400"></i>담당센터 연결
                     </a>
-                    <!-- 카카오톡 실시간 상담 버튼 -->
                     <a href="http://pf.kakao.com/_xkCPxnX" target="_blank" rel="noopener noreferrer" class="text-[11px] font-bold text-slate-900 bg-[#FEE500] hover:bg-[#FDD835] border border-[#E5CE00] px-2.5 py-1 rounded-full flex items-center transition shadow-sm">
                         <i class="fa-solid fa-comment mr-1 text-slate-900"></i>카톡 상담
                     </a>
@@ -144,8 +141,10 @@
         </header>
 
         <main class="max-w-6xl mx-auto px-3 sm:px-4 py-5 sm:py-8">
-            <div class="grid grid-cols-3 gap-1 border bg-white p-1 rounded-xl shadow-sm mb-6">
-                <button type="button" onclick="switchTab('employee')" id="tab-employee" class="py-2.5 sm:py-3 text-center font-bold text-xs sm:text-sm rounded-lg bg-red-600 text-white shadow">임직원 휴대폰</button>
+            <!-- 4개 탭 구조: 1순위 매장·창업패키지 전진 배치 -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-1 border bg-white p-1 rounded-xl shadow-sm mb-6">
+                <button type="button" onclick="switchTab('biz')" id="tab-biz" class="py-2.5 sm:py-3 text-center font-bold text-xs sm:text-sm rounded-lg bg-amber-600 text-white shadow">매장·창업패키지</button>
+                <button type="button" onclick="switchTab('employee')" id="tab-employee" class="py-2.5 sm:py-3 text-center font-semibold text-xs sm:text-sm rounded-lg text-slate-500 hover:text-slate-900">임직원 휴대폰</button>
                 <button type="button" onclick="switchTab('family')" id="tab-family" class="py-2.5 sm:py-3 text-center font-semibold text-xs sm:text-sm rounded-lg text-slate-500 hover:text-slate-900">가족·지인 특가</button>
                 <button type="button" onclick="switchTab('home')" id="tab-home" class="py-2.5 sm:py-3 text-center font-semibold text-xs sm:text-sm rounded-lg text-slate-500 hover:text-slate-900">인터넷+TV</button>
             </div>
@@ -154,8 +153,68 @@
                 <!-- 좌측 설정 영역 -->
                 <div class="lg:col-span-7 bg-white p-5 sm:p-7 rounded-2xl border shadow-sm space-y-5">
                     
-                    <!-- Tab 1: 임직원 휴대폰 -->
-                    <div id="content-employee" class="tab-content space-y-4">
+                    <!-- Tab 1: 프랜차이즈 / 매장 창업 패키지 (1순위 디폴트) -->
+                    <div id="content-biz" class="tab-content space-y-4">
+                        <div class="border-b pb-2">
+                            <span class="bg-amber-600 text-white font-extrabold text-[10px] px-2 py-0.5 rounded">OPEN D-DAY ZERO CARE</span>
+                            <h2 class="text-base font-bold text-slate-900 mt-1">프랜차이즈 매장 통신·디지털 원스톱 구축</h2>
+                            <p class="text-[11px] text-slate-500">인테리어 일정에 맞춰 사전 배선부터 장비 세팅까지 전담 PM이 100% 알아서 완료합니다.</p>
+                        </div>
+
+                        <!-- 프랜차이즈 본사/브랜드 및 지점 정보 필수 입력 -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1"><i class="fa-solid fa-store text-amber-600 mr-1"></i>1. 프랜차이즈 브랜드명 <span class="text-red-500">*</span></label>
+                                <input type="text" id="biz-franchise-name" placeholder="예: 메가커피, 컴포즈, 교촌치킨 등" class="w-full bg-slate-50 border rounded-lg p-2.5 text-xs outline-none focus:ring-2 focus:ring-amber-500 font-bold text-slate-800" oninput="calcBiz()">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">2. 개점 지점명 및 매장 규모</label>
+                                <input type="text" id="biz-store-name" placeholder="예: 강남역점 (약 25평)" class="w-full bg-slate-50 border rounded-lg p-2.5 text-xs outline-none focus:ring-2 focus:ring-amber-500" oninput="calcBiz()">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">3. 패키지 구성 선택</label>
+                            <select id="biz-package" class="w-full bg-slate-50 border rounded-lg p-2.5 text-xs outline-none focus:ring-2 focus:ring-amber-500 font-medium" onchange="calcBiz()">
+                                <option value="PRACTICAL">실속형 패키지 (인터넷+테이블오더+AI전화+출동보안)</option>
+                                <option value="ALL">프랜차이즈 올인원 풀패키지 (인터넷+CCTV+테이블오더+로봇+TV)</option>
+                                <option value="ESSENTIAL">매장 필수 베이직 (인터넷+CCTV+AI전화+카드포스)</option>
+                                <option value="CUSTOM">맞춤형 실사 상담 (평수 및 업종별 맞춤 설계)</option>
+                            </select>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">4. 오픈 예정일 (D-Day)</label>
+                                <input type="date" id="biz-open-date" class="w-full bg-slate-50 border rounded-lg p-2.5 text-xs outline-none focus:ring-2 focus:ring-amber-500 font-medium" onchange="calcBiz()">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">5. 인테리어 현장소장 연락처 (선택)</label>
+                                <input type="tel" id="biz-interior-phone" placeholder="사전 선로 매립 협의용 (010-0000-0000)" class="w-full bg-slate-50 border rounded-lg p-2.5 text-xs outline-none focus:ring-2 focus:ring-amber-500" oninput="calcBiz()">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">6. 추가 희망 파워팩 솔루션 (중복 선택 가능)</label>
+                            <div class="grid grid-cols-2 gap-1.5 text-xs">
+                                <label class="flex items-center p-2.5 bg-slate-50 border rounded-lg cursor-pointer hover:bg-amber-50 transition">
+                                    <input type="checkbox" id="biz-opt-tv" class="mr-2 accent-amber-600" onchange="calcBiz()"> 본사 프랜차이즈 TV
+                                </label>
+                                <label class="flex items-center p-2.5 bg-slate-50 border rounded-lg cursor-pointer hover:bg-amber-50 transition">
+                                    <input type="checkbox" id="biz-opt-local" class="mr-2 accent-amber-600" onchange="calcBiz()"> 우리동네 TV (지역 마케팅)
+                                </label>
+                                <label class="flex items-center p-2.5 bg-slate-50 border rounded-lg cursor-pointer hover:bg-amber-50 transition">
+                                    <input type="checkbox" id="biz-opt-robot" class="mr-2 accent-amber-600" onchange="calcBiz()"> 자율주행 서빙로봇
+                                </label>
+                                <label class="flex items-center p-2.5 bg-slate-50 border rounded-lg cursor-pointer hover:bg-amber-50 transition">
+                                    <input type="checkbox" id="biz-opt-ai" class="mr-2 accent-amber-600" onchange="calcBiz()"> AI 통화비서 (전화 자동응대)
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: 임직원 휴대폰 -->
+                    <div id="content-employee" class="tab-content space-y-4 hidden">
                         <div class="border-b pb-2">
                             <h2 class="text-base font-bold text-slate-900">파트너스 임직원 전용 견적</h2>
                             <p class="text-[11px] text-slate-500">공통지원금 / 선택약정 25% 및 할부 개월 수 실시간 연동</p>
@@ -193,7 +252,7 @@
                         </div>
                     </div>
 
-                    <!-- Tab 2: 가족/지인 휴대폰 -->
+                    <!-- Tab 3: 가족/지인 휴대폰 -->
                     <div id="content-family" class="tab-content space-y-4 hidden">
                         <div class="border-b pb-2">
                             <h2 class="text-base font-bold text-slate-900">가족·지인 추천 견적</h2>
@@ -232,7 +291,7 @@
                         </div>
                     </div>
 
-                    <!-- Tab 3: 인터넷 + TV 특가 -->
+                    <!-- Tab 4: 인터넷 + TV 특가 -->
                     <div id="content-home" class="tab-content space-y-4 hidden">
                         <div class="border-b pb-2">
                             <h2 class="text-base font-bold text-slate-900">인터넷 + IPTV 패키지 견적</h2>
@@ -258,10 +317,11 @@
                         </div>
                     </div>
 
+                    <!-- 하단 공통 신청 폼 -->
                     <div class="mt-6 pt-5 border-t space-y-3">
                         <h3 class="text-xs font-bold text-slate-800"><i class="fa-solid fa-file-signature text-red-600 mr-1"></i>공식 상담 및 파트너스 견적서 신청</h3>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                            <input type="text" id="cust-name" placeholder="신청자 성함" class="bg-slate-50 border rounded-lg p-2.5 text-xs outline-none">
+                            <input type="text" id="cust-name" placeholder="신청자/점주 성함" class="bg-slate-50 border rounded-lg p-2.5 text-xs outline-none">
                             <input type="tel" id="cust-phone" placeholder="연락처 (010-0000-0000)" class="bg-slate-50 border rounded-lg p-2.5 text-xs outline-none">
                         </div>
                         <button type="button" onclick="submitLead()" id="btn-lead" class="w-full py-3.5 bg-slate-900 hover:bg-slate-800 text-white font-extrabold rounded-xl text-xs sm:text-sm shadow transition cursor-pointer">
@@ -274,12 +334,47 @@
                 <div class="lg:col-span-5">
                     <div class="bg-slate-900 text-white p-5 sm:p-6 rounded-2xl lg:sticky lg:top-24 border border-slate-800 shadow-xl space-y-4">
                         <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                            <span class="text-xs font-bold text-red-400">견적 산출 내역</span>
+                            <span class="text-xs font-bold text-amber-400" id="panel-header-badge">프랜차이즈 상생 견적</span>
                             <span class="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded border border-slate-700">VAT 포함</span>
                         </div>
 
+                        <!-- 매장·프랜차이즈 패키지 내역 (기본 표출) -->
+                        <div id="panel-biz" class="space-y-2 text-xs">
+                            <div class="flex justify-between text-slate-300">
+                                <span>프랜차이즈</span>
+                                <span id="biz-out-franchise" class="font-bold text-amber-400 text-right">미입력</span>
+                            </div>
+                            <div class="flex justify-between text-slate-300">
+                                <span>개점 지점/규모</span>
+                                <span id="biz-out-brand" class="text-slate-200 text-right">입력 대기중</span>
+                            </div>
+                            <div class="flex justify-between text-slate-300">
+                                <span>신청 패키지</span>
+                                <span id="biz-out-name" class="font-semibold text-white max-w-[180px] truncate text-right">실속형 패키지</span>
+                            </div>
+                            <div class="flex justify-between text-slate-300">
+                                <span>개점 예정일</span>
+                                <span id="biz-out-date" class="text-slate-200 text-right">일정 미지정</span>
+                            </div>
+                            
+                            <div class="bg-amber-950/40 p-3 rounded-xl border border-amber-800/50 text-[11px] space-y-1.5 my-2">
+                                <div class="font-bold text-amber-400 flex items-center">
+                                    <i class="fa-solid fa-circle-check mr-1.5"></i>원스톱 전담 케어 보장
+                                </div>
+                                <div class="text-slate-300 pl-4 space-y-0.5 text-[10px]">
+                                    <p>• 인테리어 공정 맞춤 선로 사전 매립</p>
+                                    <p>• 1:1 전담 PM 배정 및 D-1 최종 시운전</p>
+                                    <p>• 프랜차이즈 단체 결합 특별 할인 적용</p>
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-950/70 p-3 rounded-xl border border-slate-800 text-[11px] text-slate-400 space-y-1">
+                                <div class="flex justify-between"><span>추가 파워팩:</span><span id="biz-out-opts" class="text-slate-200 font-semibold">없음</span></div>
+                            </div>
+                        </div>
+
                         <!-- 무선(휴대폰) 내역 -->
-                        <div id="panel-mobile" class="space-y-2 text-xs">
+                        <div id="panel-mobile" class="space-y-2 text-xs hidden">
                             <div class="flex justify-between text-slate-300">
                                 <span>선택 상품</span>
                                 <span id="out-name" class="font-bold text-white max-w-[180px] truncate text-right">-</span>
@@ -333,8 +428,8 @@
 
                         <div class="pt-2 border-t border-slate-800 flex justify-between items-end">
                             <div>
-                                <p class="text-[11px] text-slate-400" id="final-label">최종 체감 월 통신료</p>
-                                <p class="text-2xl font-extrabold text-white" id="out-price">0 원</p>
+                                <p class="text-[11px] text-slate-400" id="final-label">매장 맞춤 견적</p>
+                                <p class="text-2xl font-extrabold text-white" id="out-price">1:1 제휴 특가 적용</p>
                             </div>
                         </div>
                     </div>
@@ -346,10 +441,10 @@
     <!-- 모바일 하단 바 -->
     <div class="lg:hidden fixed bottom-0 left-0 right-0 bg-slate-900/95 border-t border-slate-800 px-4 py-3 z-30 flex items-center justify-between">
         <div>
-            <span class="text-[10px] text-slate-400 block">체감 월 납부액</span>
-            <span id="mobile-price" class="text-base font-extrabold text-white">0 원</span>
+            <span class="text-[10px] text-slate-400 block" id="mobile-label">프랜차이즈 상생 견적</span>
+            <span id="mobile-price" class="text-base font-extrabold text-white">상생 제휴가 적용</span>
         </div>
-        <button type="button" onclick="document.getElementById('cust-name').scrollIntoView({behavior:'smooth'})" class="bg-red-600 text-white font-bold text-xs px-4 py-2 rounded-lg">
+        <button type="button" onclick="document.getElementById('cust-name').scrollIntoView({behavior:'smooth'})" class="bg-amber-600 text-white font-bold text-xs px-4 py-2 rounded-lg">
             신청서 작성
         </button>
     </div>
@@ -521,7 +616,8 @@
             ]
         };
 
-        let curTab = 'employee', empType = 'mnp', famType = 'mnp', empDisc = 'select', famDisc = 'select', empInst = 24, famInst = 24;
+        // 기본 디폴트 탭을 'biz' (매장 창업 패키지)로 지정
+        let curTab = 'biz', empType = 'mnp', famType = 'mnp', empDisc = 'select', famDisc = 'select', empInst = 24, famInst = 24;
         let finalWon = 0, detailText = '';
 
         function fmt(n) { return new Intl.NumberFormat('ko-KR').format(Math.round(n)); }
@@ -536,7 +632,7 @@
                 sessionStorage.setItem('AUTH_CORP', 'KT CS 마스터 관리자');
                 document.getElementById('auth-gate').style.setProperty('display', 'none', 'important');
                 document.getElementById('logged-corp-badge').innerText = '관리자: jaeng2';
-                calcEmp();
+                calcBiz();
                 return;
             }
 
@@ -552,7 +648,13 @@
                     sessionStorage.setItem('AUTH_CORP', c);
                     document.getElementById('auth-gate').style.setProperty('display', 'none', 'important');
                     document.getElementById('logged-corp-badge').innerText = `파트너스: ${c}`;
-                    calcEmp();
+                    
+                    // 로그인한 기업/브랜드명이 있다면 창업 패키지 브랜드 인풋에 자동 완성
+                    const fInput = document.getElementById('biz-franchise-name');
+                    if (fInput && !fInput.value && !c.includes('마스터')) {
+                        fInput.value = c;
+                    }
+                    calcBiz();
                 } else {
                     err.classList.remove('hidden');
                 }
@@ -571,25 +673,48 @@
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.getElementById(`content-${t}`).classList.remove('hidden');
             
-            if (t === 'home') {
+            const pBadge = document.getElementById('panel-header-badge');
+
+            if (t === 'biz') {
+                document.getElementById('panel-biz').classList.remove('hidden');
+                document.getElementById('panel-mobile').classList.add('hidden');
+                document.getElementById('panel-home').classList.add('hidden');
+                document.getElementById('final-label').innerText = '매장 맞춤 견적';
+                document.getElementById('mobile-label').innerText = '프랜차이즈 상생 견적';
+                if (pBadge) { pBadge.innerText = '프랜차이즈 상생 견적'; pBadge.className = 'text-xs font-bold text-amber-400'; }
+                calcBiz();
+            } else if (t === 'home') {
+                document.getElementById('panel-biz').classList.add('hidden');
                 document.getElementById('panel-mobile').classList.add('hidden');
                 document.getElementById('panel-home').classList.remove('hidden');
                 document.getElementById('final-label').innerText = '최종 월 납부액';
+                document.getElementById('mobile-label').innerText = '체감 월 납부액';
+                if (pBadge) { pBadge.innerText = '인터넷+IPTV 견적'; pBadge.className = 'text-xs font-bold text-emerald-400'; }
+                calcHome();
             } else {
+                document.getElementById('panel-biz').classList.add('hidden');
                 document.getElementById('panel-mobile').classList.remove('hidden');
                 document.getElementById('panel-home').classList.add('hidden');
                 document.getElementById('final-label').innerText = '최종 체감 월 통신료';
+                document.getElementById('mobile-label').innerText = '체감 월 납부액';
+                if (pBadge) { pBadge.innerText = t === 'employee' ? '임직원 견적' : '가족/지인 특가 견적'; pBadge.className = 'text-xs font-bold text-red-400'; }
+                if (t === 'employee') calcEmp();
+                if (t === 'family') calcFam();
             }
 
-            ['employee', 'family', 'home'].forEach(k => {
+            ['biz', 'employee', 'family', 'home'].forEach(k => {
                 const b = document.getElementById(`tab-${k}`);
-                b.className = k === t 
-                    ? "py-2.5 sm:py-3 text-center font-bold text-xs sm:text-sm rounded-lg bg-red-600 text-white shadow" 
-                    : "py-2.5 sm:py-3 text-center font-semibold text-xs sm:text-sm rounded-lg text-slate-500 hover:text-slate-900";
+                if (!b) return;
+                if (k === t) {
+                    b.className = k === 'biz' 
+                        ? "py-2.5 sm:py-3 text-center font-bold text-xs sm:text-sm rounded-lg bg-amber-600 text-white shadow"
+                        : "py-2.5 sm:py-3 text-center font-bold text-xs sm:text-sm rounded-lg bg-red-600 text-white shadow";
+                } else {
+                    b.className = k === 'biz'
+                        ? "py-2.5 sm:py-3 text-center font-semibold text-xs sm:text-sm rounded-lg text-amber-700 hover:text-amber-800 bg-amber-50"
+                        : "py-2.5 sm:py-3 text-center font-semibold text-xs sm:text-sm rounded-lg text-slate-500 hover:text-slate-900";
+                }
             });
-            if (t === 'employee') calcEmp();
-            if (t === 'family') calcFam();
-            if (t === 'home') calcHome();
         }
 
         function setJoin(target, type) {
@@ -617,6 +742,35 @@
                 b.className = k === months ? "py-2.5 border-2 border-red-600 bg-red-50 text-red-700 font-bold text-xs rounded-lg" : "py-2.5 border bg-white text-slate-600 font-bold text-xs rounded-lg";
             });
             if (target === 'emp') calcEmp(); else calcFam();
+        }
+
+        function calcBiz() {
+            const franName = document.getElementById('biz-franchise-name').value.trim() || "미입력";
+            const storeName = document.getElementById('biz-store-name').value.trim() || "입력 대기중";
+            const pkgSel = document.getElementById('biz-package');
+            const pkgName = pkgSel.options[pkgSel.selectedIndex].text.split(' (')[0];
+            const openDate = document.getElementById('biz-open-date').value || "일정 미지정";
+            const interiorPhone = document.getElementById('biz-interior-phone').value.trim();
+            
+            const opts = [];
+            if (document.getElementById('biz-opt-tv').checked) opts.push('프랜차이즈TV');
+            if (document.getElementById('biz-opt-local').checked) opts.push('우리동네TV');
+            if (document.getElementById('biz-opt-robot').checked) opts.push('서빙로봇');
+            if (document.getElementById('biz-opt-ai').checked) opts.push('AI통화비서');
+
+            const optStr = opts.length > 0 ? opts.join(', ') : '기본구성';
+
+            document.getElementById('biz-out-franchise').innerText = franName;
+            document.getElementById('biz-out-brand').innerText = storeName;
+            document.getElementById('biz-out-name').innerText = pkgName;
+            document.getElementById('biz-out-date').innerText = openDate;
+            document.getElementById('biz-out-opts').innerText = optStr;
+
+            document.getElementById('out-price').innerText = "1:1 상생 특가 적용";
+            const mp = document.getElementById('mobile-price');
+            if (mp) mp.innerText = "상생 제휴가 적용";
+
+            detailText = `[프랜차이즈 창업] 브랜드: ${franName} | 지점/규모: ${storeName} | 패키지: ${pkgName} | 개점일: ${openDate} | 옵션: ${optStr} | 현장소장: ${interiorPhone || '미기재'}`;
         }
 
         function calcEmp() {
@@ -684,11 +838,9 @@
             const tvPrice = Number(document.getElementById('home-tv').value || 0);
             const stPrice = Number(document.getElementById('home-settop').value || 0);
             const wfPrice = Number(document.getElementById('home-wifi').value || 0);
-
             const giftMoney = Number(netObj.empExtra !== undefined ? netObj.empExtra : 400000);
 
             finalWon = netPrice + tvPrice + stPrice + wfPrice;
-
             const tvName = document.getElementById('home-tv').options[document.getElementById('home-tv').selectedIndex]?.text.split(' (')[0] || '';
             const pkgTitle = `${netObj.name} + ${tvName}`;
 
@@ -732,6 +884,31 @@
             const btn = document.getElementById('btn-lead');
             if (!name || !phone) { alert("신청자 성함과 연락처를 입력하세요."); return; }
 
+            let categoryName = '프랜차이즈 매장 창업 패키지';
+            let finalPriceText = '실사 맞춤 특가';
+            let targetCorp = sessionStorage.getItem('AUTH_CORP') || "미지정";
+
+            if (curTab === 'biz') {
+                const franName = document.getElementById('biz-franchise-name').value.trim();
+                if (!franName) {
+                    alert("프랜차이즈 브랜드명을 입력해 주세요.");
+                    document.getElementById('biz-franchise-name').focus();
+                    return;
+                }
+                targetCorp = franName; // 시트에 프랜차이즈 본사/브랜드명으로 정확히 기록
+                categoryName = '프랜차이즈 매장 창업 패키지';
+                finalPriceText = '실사 맞춤 특가';
+            } else if (curTab === 'employee') {
+                categoryName = '파트너스 임직원 휴대폰';
+                finalPriceText = `${fmt(finalWon)}원/월`;
+            } else if (curTab === 'family') {
+                categoryName = '파트너스 가족 휴대폰';
+                finalPriceText = `${fmt(finalWon)}원/월`;
+            } else if (curTab === 'home') {
+                categoryName = '파트너스 인터넷+TV 결합';
+                finalPriceText = `${fmt(finalWon)}원/월`;
+            }
+
             btn.innerText = "전송 중..."; btn.disabled = true;
             try {
                 await fetch(APPS_URL, {
@@ -739,13 +916,13 @@
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({
                         action: "SUBMIT_LEAD",
-                        corp: sessionStorage.getItem('AUTH_CORP') || "미지정",
-                        category: curTab === 'home' ? '파트너스 인터넷+TV 결합' : (curTab === 'employee' ? '파트너스 임직원 휴대폰' : '파트너스 가족 휴대폰'),
+                        corp: targetCorp,
+                        category: categoryName,
                         name: name, phone: phone,
-                        planDetails: detailText, price: `${fmt(finalWon)}원/월`
+                        planDetails: detailText, price: finalPriceText
                     })
                 });
-                alert(`견적 신청 완료: ${name} 고객님`);
+                alert(`견적 및 개점 상담 신청이 접수되었습니다.\n브랜드/신청자: [${targetCorp}] ${name} 님\n전담 기술 매니저가 오픈 일정에 맞춰 신속히 연락드리겠습니다.`);
                 document.getElementById('cust-name').value = '';
                 document.getElementById('cust-phone').value = '';
             } catch (e) { alert("전송 중 오류가 발생했습니다."); } finally { btn.innerText = "공식 견적서 발송 및 상담 신청"; btn.disabled = false; }
@@ -829,7 +1006,9 @@
                 });
             }
 
-            if (curTab === 'home') calcHome(); else calcEmp();
+            if (curTab === 'biz') calcBiz();
+            else if (curTab === 'home') calcHome();
+            else calcEmp();
         }
 
         window.onload = function() {
@@ -840,7 +1019,14 @@
             if (saved) {
                 document.getElementById('auth-gate').style.setProperty('display', 'none', 'important');
                 document.getElementById('logged-corp-badge').innerText = saved.includes('마스터') ? '관리자: jaeng2' : `파트너스: ${saved}`;
+                
+                const fInput = document.getElementById('biz-franchise-name');
+                if (fInput && !fInput.value && !saved.includes('마스터')) {
+                    fInput.value = saved;
+                }
             }
+            // 디폴트로 1번 탭(매장 창업 패키지) 활성화
+            switchTab('biz');
         };
     </script>
 </body>
