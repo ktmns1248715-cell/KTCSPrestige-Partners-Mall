@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>KT CS Prestige Partners Mall | 법인 임직원 파트너스몰 견적 시스템</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap');
+        body { 
+            font-family: 'Pretendard', sans-serif; 
+            -webkit-user-select: none; 
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none; 
+            -webkit-touch-callout: none;
+            -webkit-tap-highlight-color: transparent; 
+        }
+        @media print { body { display: none !important; } }
+        .secure-blur { filter: blur(30px) !important; transition: filter 0.2s ease; }
+        @media (max-width: 1023px) { .mobile-pad { padding-bottom: 90px; } }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased mobile-pad">
+
+    <!-- 보안 경고 토스트 팝업 (우클릭 차단 강조 모달) -->
+    <div id="security-alert" class="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-300">
+        <div class="bg-slate-950/90 text-white border-2 border-red-600 px-6 py-4 rounded-2xl shadow-2xl backdrop-blur-md flex items-center space-x-3 max-w-sm mx-4">
+            <i class="fa-solid fa-shield-halved text-red-500 text-2xl animate-pulse"></i>
+            <div>
+                <p class="text-sm font-extrabold text-red-400">보안 경고 (Security Alert)</p>
+                <p class="text-xs font-semibold text-slate-200 mt-0.5">보안 및 정책 유출 방지로 인해 <span class="text-red-400 font-bold">마우스 우클릭이 엄격히 금지</span>됩니다.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 1. 인증 게이트 -->
+    <div id="auth-gate" class="fixed inset-0 bg-slate-950/95 z-50 flex items-center justify-center p-4 backdrop-blur-md">
+        <div class="bg-white max-w-md w-full rounded-2xl shadow-2xl border border-slate-200 p-6 sm:p-8">
+            <div class="text-center mb-5">
+                <span class="bg-red-600 text-white font-extrabold text-xs px-2.5 py-1 rounded">KT CS</span>
+                <h2 class="text-2xl font-extrabold text-slate-900 mt-2.5">프레스티지 파트너스 몰</h2>
+                <p class="text-xs text-slate-500 mt-1">제휴 법인명과 발급받은 파트너스 보안 PASS를 입력하세요.</p>
+            </div>
+
+            <div class="space-y-3.5">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">제휴 법인(회사)명</label>
+                    <input type="text" id="auth-corp" placeholder="등록된 제휴 법인명을 입력하세요" class="w-full bg-slate-50 border rounded-lg p-3 text-sm focus:ring-2 focus:ring-red-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">파트너스 보안 PASS</label>
+                    <input type="password" id="auth-pass" placeholder="발급받은 보안 PASS를 입력하세요" class="w-full bg-slate-50 border rounded-lg p-3 text-sm focus:ring-2 focus:ring-red-500 outline-none">
+                </div>
+
+                <div id="auth-err" class="text-xs text-red-600 font-semibold hidden flex items-center">
+                    <i class="fa-solid fa-circle-exclamation mr-1.5"></i>인증 정보가 일치하지 않거나 제휴 승인 대기 중입니다.
+                </div>
+
+                <button type="button" onclick="executeLogin()" id="btn-login" class="w-full py-3.5 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-bold rounded-xl text-sm shadow-md transition cursor-pointer">
+                    파트너스몰 입장하기
+                </button>
+            </div>
+
+            <div class="mt-4 pt-3 border-t text-center">
+                <button type="button" onclick="toggleModal(true)" class="text-xs font-bold text-slate-700 hover:text-red-600 underline cursor-pointer p-1">
+                    신규 법인 제휴 및 PASS 발급 신청
+                </button>
+            </div>
+
+            <!-- 운영 조직 정보 및 총괄 담당자 푸터 -->
+            <div class="mt-5 pt-4 border-t border-slate-100 bg-slate-50 -mx-6 -mb-6 sm:-mx-8 sm:-mb-8 p-4 rounded-b-2xl text-[11px] text-slate-500 space-y-1">
+                <div class="font-bold text-slate-700 flex items-center">
+                    <i class="fa-solid fa-building-shield text-red-600 mr-1.5"></i>KT CS 대구광역지사 상권영업그룹
+                </div>
+                <div class="flex justify-between text-[10px] text-slate-400 pt-0.5">
+                    <span>파트너스몰 총괄 운영: 김영훈</span>
+                    <span>직통 문의: 010-8290-9971</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. 신규 법인 제휴 신청 모달 -->
+    <div id="apply-modal" class="fixed inset-0 bg-black/80 z-[60] hidden items-center justify-center p-4">
+        <div class="bg-white max-w-lg w-full rounded-2xl shadow-2xl p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="text-base sm:text-lg font-bold text-slate-900">신규 법인 제휴 및 파트너스 PASS 발급 신청</h3>
+                <button type="button" onclick="toggleModal(false)" class="text-slate-400 hover:text-slate-600 text-lg cursor-pointer p-1">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">신청 법인(기업)명</label>
+                    <input type="text" id="req-corp" placeholder="예: 제휴 신청 기업명" class="w-full bg-slate-50 border rounded-lg p-2.5 text-xs outline-none">
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">담당자 성함</label>
+                        <input type="text" id="req-name" placeholder="홍길동" class="w-full bg-slate-50 border rounded-lg p-2.5 text-xs outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">담당자 연락처</label>
+                        <input type="tel" id="req-phone" placeholder="010-0000-0000" class="w-full bg-slate-50 border rounded-lg p-2.5 text-xs outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">회사 이메일</label>
+                    <input type="email" id="req-email" placeholder="example@company.com" class="w-full bg-slate-50 border rounded-lg p-2.5 text-xs outline-none">
+                </div>
+                <button type="button" onclick="submitApply()" id="btn-apply" class="w-full py-3.5 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl text-xs sm:text-sm mt-2 cursor-pointer shadow-md">
+                    파트너스 제휴 승인 요청 등록
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. 메인 콘텐츠 -->
+    <div id="main-content">
+        <header class="bg-white border-b sticky top-0 z-40 shadow-sm">
+            <div class="max-w-7xl mx-auto px-3 sm:px-4 h-14 sm:h-16 flex items-center justify-between">
+                <div class="flex items-center space-x-1.5 sm:space-x-2">
+                    <span class="bg-red-600 text-white font-extrabold text-[10px] sm:text-xs px-2 py-0.5 rounded">KT CS</span>
+                    <span class="text-sm sm:text-lg font-extrabold tracking-tight">Prestige Partners <span class="text-red-600">Mall</span></span>
+                </div>
+                <div class="flex items-center space-x-1.5 sm:space-x-2">
+                    <!-- 담당센터 직통 전화 연결 버튼 -->
+                    <a href="tel:010-8290-9971" class="text-[11px] font-bold text-white bg-slate-900 hover:bg-slate-800 border border-slate-700 px-2.5 py-1 rounded-full flex items-center transition shadow-sm">
+                        <i class="fa-solid fa-phone-volume mr-1 text-emerald-400"></i>담당센터 연결
+                    </a>
+                    <!-- 카카오톡 실시간 상담 버튼 -->
+                    <a href="http://pf.kakao.com/_xkCPxnX" target="_blank" rel="noopener noreferrer" class="text-[11px] font-bold text-slate-900 bg-[#FEE500] hover:bg-[#FDD835] border border-[#E5CE00] px-2.5 py-1 rounded-full flex items-center transition shadow-sm">
+                        <i class="fa-solid fa-comment mr-1 text-slate-900"></i>카톡 상담
+                    </a>
+                    <span id="price-sync-status" class="text-[11px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full hidden md:flex items-center">
+                        <i class="fa-solid fa-cloud-check mr-1 text-emerald-500"></i>시트 실시간 연동됨
+                    </span>
+                    <span id="logged-corp-badge" class="text-xs font-bold text-red-600 bg-red-50 border border-red-200 px-2.5 py-0.5 rounded-full hidden sm:inline-block">파트너스: -</span>
+                    <button type="button" onclick="logout()" class="text-xs text-slate-400 hover:text-slate-700 p-1">로그아웃</button>
+                </div>
+            </div>
+        </header>
+
+        <main class="max-w-6xl mx-auto px-3 sm:px-4 py-5 sm:py-8">
+            <div class="grid grid-cols-3 gap-1 border bg-white p-1 rounded-xl shadow-sm mb-6">
+                <button type="button" onclick="switchTab('employee')" id="tab-employee" class="py-2.5 sm:py-3 text-center font-bold text-xs sm:text-sm rounded-lg bg-red-600 text-white shadow">임직원 휴대폰</button>
+                <button type="button" onclick="switchTab('family')" id="tab-family" class="py-2.5 sm:py-3 text-center font-semibold text-xs sm:text-sm rounded-lg text-slate-500 hover:text-slate-900">가족·지인 특가</button>
+                <button type="button" onclick="switchTab('home')" id="tab-home" class="py-2.5 sm:py-3 text-center font-semibold text-xs sm:text-sm rounded-lg text-slate-500 hover:text-slate-900">인터넷+TV</button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- 좌측 설정 영역 -->
+                <div class="lg:col-span-7 bg-white p-5 sm:p-7 rounded-2xl border shadow-sm space-y-5">
+                    
+                    <!-- Tab 1: 임직원 휴대폰 -->
+                    <div id="content-employee" class="tab-content space-y-4">
+                        <div class="border-b pb-2">
+                            <h2 class="text-base font-bold text-slate-900">파트너스 임직원 전용 견적</h2>
+                            <p class="text-[11px] text-slate-500">공통지원금 / 선택약정 25% 및 할부 개월 수 실시간 연동</p>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">1. 단말기 모델 선택</label>
+                            <select id="emp-device" class="w-full bg-slate-50 border rounded-lg p-2.5 text-xs outline-none focus:ring-2 focus:ring-red-500 font-medium" onchange="calcEmp()"></select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">2. 가입 유형</label>
+                            <div class="grid grid-cols-3 gap-1.5">
+                                <button type="button" onclick="setJoin('emp','mnp')" id="emp-type-mnp" class="py-2.5 border-2 border-red-600 bg-red-50 text-red-700 font-bold text-xs rounded-lg">번호이동</button>
+                                <button type="button" onclick="setJoin('emp','chg')" id="emp-type-chg" class="py-2.5 border bg-white text-slate-600 font-bold text-xs rounded-lg">기기변경</button>
+                                <button type="button" onclick="setJoin('emp','new')" id="emp-type-new" class="py-2.5 border bg-white text-slate-600 font-bold text-xs rounded-lg">신규가입</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">3. 할인 방식 선택</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button type="button" onclick="setDiscount('emp','select')" id="emp-disc-select" class="py-2.5 border-2 border-red-600 bg-red-50 text-red-700 font-bold text-xs rounded-lg">선택약정 (25% 요금할인)</button>
+                                <button type="button" onclick="setDiscount('emp','public')" id="emp-disc-public" class="py-2.5 border bg-white text-slate-600 font-bold text-xs rounded-lg">공통지원금 (단말할인)</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">4. 할부 개월 수</label>
+                            <div class="grid grid-cols-3 gap-1.5">
+                                <button type="button" onclick="setInstallment('emp', 24)" id="emp-inst-24" class="py-2.5 border-2 border-red-600 bg-red-50 text-red-700 font-bold text-xs rounded-lg">24개월 (이자5.9%)</button>
+                                <button type="button" onclick="setInstallment('emp', 36)" id="emp-inst-36" class="py-2.5 border bg-white text-slate-600 font-bold text-xs rounded-lg">36개월 (이자5.9%)</button>
+                                <button type="button" onclick="setInstallment('emp', 0)" id="emp-inst-0" class="py-2.5 border bg-white text-slate-600 font-bold text-xs rounded-lg">일시납 (완납)</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">5. 요금제 선택</label>
+                            <select id="emp-plan" class="w-full bg-slate-50 border rounded-lg p-2.5 text-xs outline-none focus:ring-2 focus:ring-red-500 font-medium" onchange="calcEmp()"></select>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: 가족/지인 휴대폰 -->
+                    <div id="content-family" class="tab-content space-y-4 hidden">
+                        <div class="border-b pb-2">
+                            <h2 class="text-base font-bold text-slate-900">가족·지인 추천 견적</h2>
+                            <p class="text-[11px] text-slate-500">가족 특별 지원금 + 공통지원금/선택약정 실시간 연동</p>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">1. 단말기 모델 선택</label>
+                            <select id="fam-device" class="w-full bg-slate-50 border rounded-lg p-2.5 text-xs outline-none focus:ring-2 focus:ring-red-500 font-medium" onchange="calcFam()"></select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">2. 가입 유형</label>
+                            <div class="grid grid-cols-3 gap-1.5">
+                                <button type="button" onclick="setJoin('fam','mnp')" id="fam-type-mnp" class="py-2.5 border-2 border-red-600 bg-red-50 text-red-700 font-bold text-xs rounded-lg">번호이동</button>
+                                <button type="button" onclick="setJoin('fam','chg')" id="fam-type-chg" class="py-2.5 border bg-white text-slate-600 font-bold text-xs rounded-lg">기기변경</button>
+                                <button type="button" onclick="setJoin('fam','new')" id="fam-type-new" class="py-2.5 border bg-white text-slate-600 font-bold text-xs rounded-lg">신규가입</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">3. 할인 방식 선택</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button type="button" onclick="setDiscount('fam','select')" id="fam-disc-select" class="py-2.5 border-2 border-red-600 bg-red-50 text-red-700 font-bold text-xs rounded-lg">선택약정 (25% 요금할인)</button>
+                                <button type="button" onclick="setDiscount('fam','public')" id="fam-disc-public" class="py-2.5 border bg-white text-slate-600 font-bold text-xs rounded-lg">공통지원금 (단말할인)</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">4. 할부 개월 수</label>
+                            <div class="grid grid-cols-3 gap-1.5">
+                                <button type="button" onclick="setInstallment('fam', 24)" id="fam-inst-24" class="py-2.5 border-2 border-red-600 bg-red-50 text-red-700 font-bold text-xs rounded-lg">24개월 (이자5.9%)</button>
+                                <button type="button" onclick="setInstallment('fam', 36)" id="fam-inst-36" class="py-2.5 border bg-white text-slate-600 font-bold text-xs rounded-lg">36개월 (이자5.9%)</button>
+                                <button type="button" onclick="setInstallment('fam', 0)" id="fam-inst-0" class="py-2.5 border bg-white text-slate-600 font-bold text-xs rounded-lg">일시납 (완납)</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">5. 요금제 선택</label>
+                            <select id="fam-plan" class="w-full bg-slate-50 border rounded-lg p-2.5 text-xs outline-none focus:ring-2 focus:ring-red-500 font-medium" onchange="calcFam()"></select>
+                        </div>
+                    </div>
+
+                    <!-- Tab 3: 인터넷 + TV 특가 -->
+                    <div id="content-home" class="tab-content space-y-4 hidden">
+                        <div class="border-b pb-2">
+                            <h2 class="text-base font-bold text-slate-900">인터넷 + IPTV 패키지 견적</h2>
+                            <p class="text-[11px] text-slate-500">인터넷, IPTV, 셋톱박스, 와이파이 기본 월정료 합산</p>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">1. 인터넷 속도 선택</label>
+                            <select id="home-speed" class="w-full bg-slate-50 border rounded-lg p-2.5 text-xs outline-none focus:ring-2 focus:ring-red-500 font-medium" onchange="calcHome()"></select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">2. IPTV 상품 선택</label>
+                            <select id="home-tv" class="w-full bg-slate-50 border rounded-lg p-2.5 text-xs outline-none focus:ring-2 focus:ring-red-500 font-medium" onchange="calcHome()"></select>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">3. 셋톱박스 모델</label>
+                                <select id="home-settop" class="w-full bg-slate-50 border rounded-lg p-2 text-xs outline-none focus:ring-2 focus:ring-red-500 font-medium" onchange="calcHome()"></select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">4. 와이파이 공유기</label>
+                                <select id="home-wifi" class="w-full bg-slate-50 border rounded-lg p-2 text-xs outline-none focus:ring-2 focus:ring-red-500 font-medium" onchange="calcHome()"></select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 pt-5 border-t space-y-3">
+                        <h3 class="text-xs font-bold text-slate-800"><i class="fa-solid fa-file-signature text-red-600 mr-1"></i>공식 상담 및 파트너스 견적서 신청</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <input type="text" id="cust-name" placeholder="신청자 성함" class="bg-slate-50 border rounded-lg p-2.5 text-xs outline-none">
+                            <input type="tel" id="cust-phone" placeholder="연락처 (010-0000-0000)" class="bg-slate-50 border rounded-lg p-2.5 text-xs outline-none">
+                        </div>
+                        <button type="button" onclick="submitLead()" id="btn-lead" class="w-full py-3.5 bg-slate-900 hover:bg-slate-800 text-white font-extrabold rounded-xl text-xs sm:text-sm shadow transition cursor-pointer">
+                            공식 견적서 발송 및 상담 신청
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 우측 결과 패널 -->
+                <div class="lg:col-span-5">
+                    <div class="bg-slate-900 text-white p-5 sm:p-6 rounded-2xl lg:sticky lg:top-24 border border-slate-800 shadow-xl space-y-4">
+                        <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                            <span class="text-xs font-bold text-red-400">견적 산출 내역</span>
+                            <span class="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded border border-slate-700">VAT 포함</span>
+                        </div>
+
+                        <!-- 무선(휴대폰) 내역 -->
+                        <div id="panel-mobile" class="space-y-2 text-xs">
+                            <div class="flex justify-between text-slate-300">
+                                <span>선택 상품</span>
+                                <span id="out-name" class="font-bold text-white max-w-[180px] truncate text-right">-</span>
+                            </div>
+                            <div class="flex justify-between text-slate-300">
+                                <span>가입/할인 조건</span>
+                                <span id="out-cond" class="text-slate-200 text-right">-</span>
+                            </div>
+                            <div class="flex justify-between text-slate-300">
+                                <span>단말 출고가</span>
+                                <span id="out-base" class="text-slate-300">0 원</span>
+                            </div>
+                            <div class="flex justify-between text-red-400 font-bold">
+                                <span>총 단말 할인금</span>
+                                <span id="out-disc">- 0 원</span>
+                            </div>
+                            <div class="flex justify-between text-slate-300">
+                                <span>단말 할부원금</span>
+                                <span id="out-prin" class="font-semibold text-white">0 원</span>
+                            </div>
+                            
+                            <div class="bg-slate-950/70 p-3 rounded-xl border border-slate-800 text-[11px] text-slate-400 space-y-1 my-2">
+                                <div class="flex justify-between"><span>월 단말 청구액:</span><span id="detail-dev" class="text-slate-200">0 원</span></div>
+                                <div class="flex justify-between"><span>월 통신 청구액:</span><span id="detail-plan" class="text-slate-200">0 원</span></div>
+                            </div>
+                        </div>
+
+                        <!-- 유선(인터넷+TV) 내역 -->
+                        <div id="panel-home" class="space-y-2 text-xs hidden">
+                            <div class="flex justify-between text-slate-300">
+                                <span>선택 패키지</span>
+                                <span id="home-out-name" class="font-bold text-white max-w-[180px] truncate text-right">-</span>
+                            </div>
+                            <div class="flex justify-between text-slate-300">
+                                <span>약정 조건</span>
+                                <span class="text-slate-200 text-right">3년 약정 기준</span>
+                            </div>
+                            
+                            <div class="flex justify-between text-emerald-400 font-bold bg-emerald-950/40 p-2.5 rounded-lg border border-emerald-800/50">
+                                <span>가입 추가지원금 (별도 지급)</span>
+                                <span id="home-out-gift">+ 400,000 원 지급</span>
+                            </div>
+
+                            <div class="bg-slate-950/70 p-3 rounded-xl border border-slate-800 text-[11px] text-slate-400 space-y-1.5 my-2">
+                                <div class="flex justify-between"><span>인터넷 기본요금:</span><span id="home-detail-net" class="text-slate-200">0 원</span></div>
+                                <div class="flex justify-between"><span>IPTV 요금:</span><span id="home-detail-tv" class="text-slate-200">0 원</span></div>
+                                <div class="flex justify-between"><span>셋톱박스 임대료:</span><span id="home-detail-st" class="text-slate-200">0 원</span></div>
+                                <div class="flex justify-between"><span>와이파이 공유기료:</span><span id="home-detail-wf" class="text-slate-200">0 원</span></div>
+                            </div>
+                        </div>
+
+                        <div class="pt-2 border-t border-slate-800 flex justify-between items-end">
+                            <div>
+                                <p class="text-[11px] text-slate-400" id="final-label">최종 체감 월 통신료</p>
+                                <p class="text-2xl font-extrabold text-white" id="out-price">0 원</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 모바일 하단 바 -->
+    <div class="lg:hidden fixed bottom-0 left-0 right-0 bg-slate-900/95 border-t border-slate-800 px-4 py-3 z-30 flex items-center justify-between">
+        <div>
+            <span class="text-[10px] text-slate-400 block">체감 월 납부액</span>
+            <span id="mobile-price" class="text-base font-extrabold text-white">0 원</span>
+        </div>
+        <button type="button" onclick="document.getElementById('cust-name').scrollIntoView({behavior:'smooth'})" class="bg-red-600 text-white font-bold text-xs px-4 py-2 rounded-lg">
+            신청서 작성
+        </button>
+    </div>
+
+    <!-- 4. 통합 스크립트 & 보안 방어 엔진 -->
+    <script>
+        const APPS_URL = "https://script.google.com/macros/s/AKfycbyMkt2f6ed9kub5W6rBMY-Jg1dsimfOy7ACbwv9aIoKP8sBd6JNg6VcSP3S6kvBxiHa/exec";
+        
+        // ==================== 강화된 프론트엔드 보안 방어 체계 ====================
+        let alertTimer = null;
+        function triggerSecurityAlert() {
+            const el = document.getElementById('security-alert');
+            el.classList.remove('opacity-0');
+            el.classList.add('opacity-100');
+            if (alertTimer) clearTimeout(alertTimer);
+            alertTimer = setTimeout(() => {
+                el.classList.remove('opacity-100');
+                el.classList.add('opacity-0');
+            }, 2000);
+        }
+
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            triggerSecurityAlert();
+            return false;
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F12' || e.keyCode === 123) {
+                e.preventDefault();
+                e.stopPropagation();
+                triggerSecurityAlert();
+                return false;
+            }
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && ['I', 'i', 'J', 'j', 'C', 'c'].includes(e.key)) {
+                e.preventDefault();
+                e.stopPropagation();
+                triggerSecurityAlert();
+                return false;
+            }
+            if ((e.ctrlKey || e.metaKey) && ['u', 'U'].includes(e.key)) {
+                e.preventDefault();
+                e.stopPropagation();
+                triggerSecurityAlert();
+                return false;
+            }
+            if ((e.ctrlKey || e.metaKey) && ['s', 'S', 'p', 'P'].includes(e.key)) {
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+            }
+        });
+
+        window.addEventListener('blur', function() {
+            document.body.classList.add('secure-blur');
+        });
+        window.addEventListener('focus', function() {
+            document.body.classList.remove('secure-blur');
+        });
+
+        setInterval(function() {
+            const start = performance.now();
+            (function() {}["constructor"]("debugger")());
+            if (performance.now() - start > 100) {
+                document.body.innerHTML = "<div class='flex items-center justify-center min-h-screen text-slate-900 font-extrabold text-xl'>보안 위협이 감지되어 세션이 차단되었습니다.</div>";
+            }
+        }, 1000);
+
+        // ==================== 견적 연산 및 데이터 엔진 ====================
+        let DB = {
+            devices: {
+                "SM-S948NK": { name: "갤럭시 S26 Ultra", price: 1797400, mnp: 500000, chg: 500000, new: 500000, empExtra: 50000, famExtra: 10000 },
+                "SM-S948NK512": { name: "갤럭시 S26 Ultra 512GB", price: 2050400, mnp: 500000, chg: 500000, new: 500000, empExtra: 50000, famExtra: 10000 },
+                "SM-S947NK": { name: "갤럭시 S26+", price: 1452000, mnp: 500000, chg: 500000, new: 500000, empExtra: 50000, famExtra: 10000 },
+                "SM-S947NK512": { name: "갤럭시 S26+ 512GB", price: 1705000, mnp: 500000, chg: 500000, new: 500000, empExtra: 50000, famExtra: 10000 },
+                "SM-S942NK": { name: "갤럭시 S26", price: 1254000, mnp: 500000, chg: 500000, new: 500000, empExtra: 50000, famExtra: 10000 },
+                "SM-S942NK512": { name: "갤럭시 S26 512GB", price: 1507000, mnp: 500000, chg: 500000, new: 500000, empExtra: 50000, famExtra: 10000 },
+                "SM-S938NK": { name: "갤럭시 S25 Ultra", price: 1698400, mnp: 500000, chg: 500000, new: 500000, empExtra: 50000, famExtra: 10000 },
+                "SM-S938NK512": { name: "갤럭시 S25 Ultra 512GB", price: 1841400, mnp: 500000, chg: 500000, new: 500000, empExtra: 50000, famExtra: 10000 },
+                "SM-S936NK": { name: "갤럭시 S25+", price: 1353000, mnp: 500000, chg: 500000, new: 500000, empExtra: 50000, famExtra: 10000 },
+                "SM-S936NK512": { name: "갤럭시 S25+ 512GB", price: 1496000, mnp: 500000, chg: 500000, new: 500000, empExtra: 50000, famExtra: 10000 },
+                "SM-S931NK": { name: "갤럭시 S25", price: 1155000, mnp: 500000, chg: 500000, new: 500000, empExtra: 50000, famExtra: 10000 },
+                "SM-S931NK512": { name: "갤럭시 S25 512GB", price: 1298000, mnp: 500000, chg: 500000, new: 500000, empExtra: 50000, famExtra: 10000 },
+                "SM-S937NK": { name: "갤럭시 S25 엣지", price: 1496000, mnp: 500000, chg: 500000, new: 500000, empExtra: 50000, famExtra: 10000 },
+                "SM-S937NK512": { name: "갤럭시 S25 엣지 512GB", price: 1639000, mnp: 500000, chg: 500000, new: 500000, empExtra: 50000, famExtra: 10000 },
+                "SM-S731NK": { name: "갤럭시S25 FE", price: 946000, mnp: 500000, chg: 500000, new: 500000, empExtra: 50000, famExtra: 10000 },
+                "SM-F966NK": { name: "갤럭시 Z Fold7", price: 2379300, mnp: 500000, chg: 500000, new: 500000, empExtra: 50000, famExtra: 10000 },
+                "SM-F966NK512": { name: "갤럭시 Z Fold7 512GB", price: 2537700, mnp: 500000, chg: 500000, new: 500000, empExtra: 50000, famExtra: 10000 },
+                "SM-F766NK": { name: "갤럭시 Z Flip7", price: 1485000, mnp: 500000, chg: 500000, new: 500000, empExtra: 50000, famExtra: 10000 },
+                "SM-F766NK512": { name: "갤럭시 Z Flip7 512GB", price: 1643400, mnp: 500000, chg: 500000, new: 500000, empExtra: 50000, famExtra: 10000 },
+                "SM-F761NK": { name: "갤럭시 Z Flip7 FE", price: 1199000, mnp: 500000, chg: 500000, new: 500000, empExtra: 50000, famExtra: 10000 },
+                "SM-F956NK": { name: "갤럭시 Z Fold6", price: 2229700, mnp: 700000, chg: 700000, new: 700000, empExtra: 50000, famExtra: 10000 },
+                "SM-F956NK512": { name: "갤럭시 Z Fold6 512GB", price: 2388100, mnp: 700000, chg: 700000, new: 700000, empExtra: 50000, famExtra: 10000 },
+                "SM-F741NK": { name: "갤럭시 Z Flip6", price: 1485000, mnp: 700000, chg: 700000, new: 700000, empExtra: 50000, famExtra: 10000 },
+                "SM-F741NK512": { name: "갤럭시 Z Flip6 512GB", price: 1643400, mnp: 700000, chg: 700000, new: 700000, empExtra: 50000, famExtra: 10000 },
+                "AIP17PM-256": { name: "iPhone 17 Pro Max 256GB", price: 1980000, mnp: 450000, chg: 450000, new: 450000, empExtra: 50000, famExtra: 0 },
+                "AIP17PM-512": { name: "iPhone 17 Pro Max 512GB", price: 2288000, mnp: 450000, chg: 450000, new: 450000, empExtra: 50000, famExtra: 0 },
+                "AIP17PM-1T": { name: "iPhone 17 Pro Max 1TB", price: 2585000, mnp: 450000, chg: 450000, new: 450000, empExtra: 50000, famExtra: 0 },
+                "AIP17PM-2T": { name: "iPhone 17 Pro Max 2TB", price: 3190000, mnp: 450000, chg: 450000, new: 450000, empExtra: 50000, famExtra: 0 },
+                "AIP17P-256": { name: "iPhone 17 Pro 256GB", price: 1782000, mnp: 450000, chg: 450000, new: 450000, empExtra: 50000, famExtra: 0 },
+                "AIP17P-512": { name: "iPhone 17 Pro 512GB", price: 2090000, mnp: 450000, chg: 450000, new: 450000, empExtra: 50000, famExtra: 0 },
+                "AIP17P-1T": { name: "iPhone 17 Pro 1TB", price: 2387000, mnp: 450000, chg: 450000, new: 450000, empExtra: 50000, famExtra: 0 },
+                "AIPA-256": { name: "iPhone Air 256GB", price: 1584000, mnp: 450000, chg: 450000, new: 450000, empExtra: 50000, famExtra: 0 },
+                "AIPA-512": { name: "iPhone Air 512GB", price: 1881000, mnp: 450000, chg: 450000, new: 450000, empExtra: 50000, famExtra: 0 },
+                "AIPA-1T": { name: "iPhone Air 1TB", price: 2189000, mnp: 450000, chg: 450000, new: 450000, empExtra: 50000, famExtra: 0 },
+                "AIP17-256": { name: "iPhone 17 256GB", price: 1287000, mnp: 500000, chg: 450000, new: 450000, empExtra: 50000, famExtra: 0 },
+                "AIP17-512": { name: "iPhone 17 512GB", price: 1584000, mnp: 500000, chg: 450000, new: 450000, empExtra: 50000, famExtra: 0 },
+                "AIP17E-256": { name: "iPhone 17e 256GB", price: 990000, mnp: 450000, chg: 450000, new: 450000, empExtra: 50000, famExtra: 0 },
+                "AIP17E-512": { name: "iPhone 17e 512GB", price: 1287000, mnp: 450000, chg: 450000, new: 450000, empExtra: 50000, famExtra: 0 },
+                "AIP16PM-256": { name: "iPhone 16 Pro Max 256G", price: 1672000, mnp: 600000, chg: 600000, new: 600000, empExtra: 50000, famExtra: 0 },
+                "AIP16PM-512": { name: "iPhone 16 Pro Max 512G", price: 1980000, mnp: 600000, chg: 600000, new: 600000, empExtra: 50000, famExtra: 0 },
+                "AIP16PM-1T": { name: "iPhone 16 Pro Max 1T", price: 2277000, mnp: 600000, chg: 600000, new: 600000, empExtra: 50000, famExtra: 0 },
+                "AIP16P-128": { name: "iPhone 16 Pro 128G", price: 1320000, mnp: 600000, chg: 600000, new: 600000, empExtra: 50000, famExtra: 0 },
+                "AIP16P-256": { name: "iPhone 16 Pro 256G", price: 1474000, mnp: 600000, chg: 600000, new: 600000, empExtra: 50000, famExtra: 0 },
+                "AIP16P-512": { name: "iPhone 16 Pro 512G", price: 1771000, mnp: 600000, chg: 600000, new: 600000, empExtra: 50000, famExtra: 0 },
+                "AIP16P-1T": { name: "iPhone 16 Pro 1T", price: 2079000, mnp: 600000, chg: 600000, new: 600000, empExtra: 50000, famExtra: 0 },
+                "AIP16PS-128": { name: "iPhone 16 Plus 128G", price: 1122000, mnp: 600000, chg: 600000, new: 600000, empExtra: 50000, famExtra: 0 },
+                "AIP16PS-256": { name: "iPhone 16 Plus 256G", price: 1276000, mnp: 600000, chg: 600000, new: 600000, empExtra: 50000, famExtra: 0 },
+                "AIP16PS-512": { name: "iPhone 16 Plus 512G", price: 1573000, mnp: 600000, chg: 600000, new: 600000, empExtra: 50000, famExtra: 0 },
+                "AIP16-128": { name: "iPhone 16 128G", price: 1023000, mnp: 600000, chg: 600000, new: 600000, empExtra: 50000, famExtra: 0 },
+                "AIP16-256": { name: "iPhone 16 256G", price: 1177000, mnp: 600000, chg: 600000, new: 600000, empExtra: 50000, famExtra: 0 },
+                "AIP16-512": { name: "iPhone 16 512G", price: 1474000, mnp: 600000, chg: 600000, new: 600000, empExtra: 50000, famExtra: 0 },
+                "AIP16E-128": { name: "iPhone 16e 128G", price: 990000, mnp: 500000, chg: 500000, new: 500000, empExtra: 50000, famExtra: 0 },
+                "AIP16E-256": { name: "iPhone 16e 256G", price: 1133000, mnp: 500000, chg: 500000, new: 500000, empExtra: 50000, famExtra: 0 },
+                "AIP16E-512": { name: "iPhone 16e 512G", price: 1430000, mnp: 500000, chg: 500000, new: 500000, empExtra: 50000, famExtra: 0 },
+                "SM-A376NK": { name: "갤럭시A37 5G", price: 598400, mnp: 201000, chg: 201000, new: 201000, empExtra: 50000, famExtra: 10000 },
+                "SM-A366NK": { name: "갤럭시A36 5G", price: 499400, mnp: 201000, chg: 201000, new: 201000, empExtra: 50000, famExtra: 10000 },
+                "SM-A276K": { name: "갤럭시 Jump5", price: 545600, mnp: 201000, chg: 201000, new: 201000, empExtra: 50000, famExtra: 10000 },
+                "SM-M366K": { name: "갤럭시 Jump4", price: 449900, mnp: 201000, chg: 201000, new: 201000, empExtra: 50000, famExtra: 10000 },
+                "SM-M366K-MOM": { name: "맘편안폰S", price: 499400, mnp: 201000, chg: 201000, new: 201000, empExtra: 50000, famExtra: 10000 },
+                "SM-A175NK": { name: "갤럭시 A17", price: 319000, mnp: 201000, chg: 201000, new: 201000, empExtra: 50000, famExtra: 0 },
+                "SM-A175N0": { name: "갤럭시 A17_ONE", price: 319000, mnp: 201000, chg: 201000, new: 201000, empExtra: 50000, famExtra: 0 },
+                "XT2601-2K": { name: "Edge70", price: 550000, mnp: 201000, chg: 201000, new: 201000, empExtra: 50000, famExtra: 10000 },
+                "XT2429-2K": { name: "엣지50퓨전", price: 349800, mnp: 201000, chg: 201000, new: 201000, empExtra: 50000, famExtra: 10000 },
+                "XT2621-4K": { name: "moto g77", price: 396000, mnp: 201000, chg: 201000, new: 201000, empExtra: 50000, famExtra: 0 },
+                "XT2529-2K": { name: "moto G56 5G", price: 330000, mnp: 201000, chg: 201000, new: 201000, empExtra: 50000, famExtra: 0 },
+                "XT2363-3K": { name: "G34 5G", price: 211200, mnp: 201000, chg: 201000, new: 201000, empExtra: 50000, famExtra: 0 },
+                "MI-XM14TK": { name: "샤오미 14T", price: 599500, mnp: 201000, chg: 201000, new: 201000, empExtra: 50000, famExtra: 10000 },
+                "MI-RMN14K": { name: "레드미노트 14 5G", price: 319000, mnp: 201000, chg: 201000, new: 201000, empExtra: 50000, famExtra: 0 },
+                "MI-RM14CK": { name: "레드미 14C", price: 199100, mnp: 150000, chg: 150000, new: 150000, empExtra: 50000, famExtra: 0 },
+                "AT-M130K": { name: "시나모롤 키즈폰", price: 148500, mnp: 140000, chg: 140000, new: 140000, empExtra: 0, famExtra: 0 },
+                "SM-A175NK-KP": { name: "폼폼푸린 키즈폰", price: 349800, mnp: 201000, chg: 201000, new: 201000, empExtra: 50000, famExtra: 0 },
+                "Z2339K": { name: "클래식 폴더", price: 205700, mnp: 150000, chg: 150000, new: 150000, empExtra: 50000, famExtra: 0 }
+            },
+            plans: [
+                { code: "P130", name: "초이스130", price: 130000 },
+                { code: "P110", name: "초이스110", price: 110000 },
+                { code: "P90", name: "초이스90", price: 90000 },
+                { code: "P69", name: "베이직110GB (69요금제)", price: 69000 },
+                { code: "P45", name: "베이직7GB (45요금제)", price: 45000 }
+            ],
+            internet: [
+                { code: "NET100", name: "인터넷 슬림 100M", price: 22000, empExtra: 400000, famExtra: 300000 },
+                { code: "NET500", name: "인터넷 베이직 500M", price: 33000, empExtra: 400000, famExtra: 300000 },
+                { code: "NET1G", name: "인터넷 에센스 1G", price: 38500, empExtra: 400000, famExtra: 300000 },
+                { code: "NET2G5", name: "인터넷 프리미엄 2.5G", price: 44000, empExtra: 400000, famExtra: 300000 }
+            ],
+            iptv: [
+                { code: "TV_BASIC", name: "지니TV 베이직", price: 12100 },
+                { code: "TV_ALLG", name: "지니TV 모든G", price: 16500 }
+            ],
+            settop: [
+                { code: "ST_A", name: "지니셋탑A", price: 3300 },
+                { code: "ST_4", name: "지니셋탑4", price: 4400 }
+            ],
+            wifi: [
+                { code: "WF_BASIC", name: "GiGA WiFi 공유기", price: 1100 },
+                { code: "WF_7D", name: "GiGA WiFi 7D 공유기", price: 2200 }
+            ]
+        };
+
+        let curTab = 'employee', empType = 'mnp', famType = 'mnp', empDisc = 'select', famDisc = 'select', empInst = 24, famInst = 24;
+        let finalWon = 0, detailText = '';
+
+        function fmt(n) { return new Intl.NumberFormat('ko-KR').format(Math.round(n)); }
+
+        async function executeLogin() {
+            const c = document.getElementById('auth-corp').value.trim();
+            const p = document.getElementById('auth-pass').value.trim();
+            const err = document.getElementById('auth-err');
+            const btn = document.getElementById('btn-login');
+
+            if (c === 'jaeng2' && p === '123qwe') {
+                sessionStorage.setItem('AUTH_CORP', 'KT CS 마스터 관리자');
+                document.getElementById('auth-gate').style.setProperty('display', 'none', 'important');
+                document.getElementById('logged-corp-badge').innerText = '관리자: jaeng2';
+                calcEmp();
+                return;
+            }
+
+            btn.innerText = "확인 중..."; btn.disabled = true; err.classList.add('hidden');
+            try {
+                const res = await fetch(APPS_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ action: "VERIFY_CORP", corp: c, pass: p })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    sessionStorage.setItem('AUTH_CORP', c);
+                    document.getElementById('auth-gate').style.setProperty('display', 'none', 'important');
+                    document.getElementById('logged-corp-badge').innerText = `파트너스: ${c}`;
+                    calcEmp();
+                } else {
+                    err.classList.remove('hidden');
+                }
+            } catch (e) {
+                alert("인증 통신 오류가 발생했습니다.");
+            } finally {
+                btn.innerText = "파트너스몰 입장하기"; btn.disabled = false;
+            }
+        }
+
+        function logout() { sessionStorage.removeItem('AUTH_CORP'); location.reload(); }
+        function toggleModal(s) { const m = document.getElementById('apply-modal'); m.style.display = s ? 'flex' : 'none'; m.classList.toggle('hidden', !s); }
+
+        function switchTab(t) {
+            curTab = t;
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`content-${t}`).classList.remove('hidden');
+            
+            if (t === 'home') {
+                document.getElementById('panel-mobile').classList.add('hidden');
+                document.getElementById('panel-home').classList.remove('hidden');
+                document.getElementById('final-label').innerText = '최종 월 납부액';
+            } else {
+                document.getElementById('panel-mobile').classList.remove('hidden');
+                document.getElementById('panel-home').classList.add('hidden');
+                document.getElementById('final-label').innerText = '최종 체감 월 통신료';
+            }
+
+            ['employee', 'family', 'home'].forEach(k => {
+                const b = document.getElementById(`tab-${k}`);
+                b.className = k === t 
+                    ? "py-2.5 sm:py-3 text-center font-bold text-xs sm:text-sm rounded-lg bg-red-600 text-white shadow" 
+                    : "py-2.5 sm:py-3 text-center font-semibold text-xs sm:text-sm rounded-lg text-slate-500 hover:text-slate-900";
+            });
+            if (t === 'employee') calcEmp();
+            if (t === 'family') calcFam();
+            if (t === 'home') calcHome();
+        }
+
+        function setJoin(target, type) {
+            if (target === 'emp') empType = type; else famType = type;
+            ['mnp', 'chg', 'new'].forEach(k => {
+                const b = document.getElementById(`${target}-type-${k}`);
+                b.className = k === type ? "py-2.5 border-2 border-red-600 bg-red-50 text-red-700 font-bold text-xs rounded-lg" : "py-2.5 border bg-white text-slate-600 font-bold text-xs rounded-lg";
+            });
+            if (target === 'emp') calcEmp(); else calcFam();
+        }
+
+        function setDiscount(target, mode) {
+            if (target === 'emp') empDisc = mode; else famDisc = mode;
+            ['select', 'public'].forEach(k => {
+                const b = document.getElementById(`${target}-disc-${k}`);
+                b.className = k === mode ? "py-2.5 border-2 border-red-600 bg-red-50 text-red-700 font-bold text-xs rounded-lg" : "py-2.5 border bg-white text-slate-600 font-bold text-xs rounded-lg";
+            });
+            if (target === 'emp') calcEmp(); else calcFam();
+        }
+
+        function setInstallment(target, months) {
+            if (target === 'emp') empInst = months; else famInst = months;
+            [24, 36, 0].forEach(k => {
+                const b = document.getElementById(`${target}-inst-${k}`);
+                b.className = k === months ? "py-2.5 border-2 border-red-600 bg-red-50 text-red-700 font-bold text-xs rounded-lg" : "py-2.5 border bg-white text-slate-600 font-bold text-xs rounded-lg";
+            });
+            if (target === 'emp') calcEmp(); else calcFam();
+        }
+
+        function calcEmp() {
+            const devKey = document.getElementById('emp-device').value;
+            const planVal = Number(document.getElementById('emp-plan').value);
+            const dev = DB.devices[devKey];
+            if (!dev) return;
+
+            let totalDisc = dev.empExtra || 0;
+            if (empDisc === 'public') totalDisc += (dev[empType] || 0);
+
+            const principal = Math.max(0, dev.price - totalDisc);
+            let devMonthly = empInst === 24 ? (principal * 1.118) / 24 : (empInst === 36 ? (principal * 1.177) / 36 : 0);
+            let planMonthly = empDisc === 'select' ? planVal * 0.75 : planVal;
+
+            finalWon = Math.round(devMonthly + planMonthly);
+            const joinLabel = empType === 'mnp' ? '번호이동' : (empType === 'chg' ? '기기변경' : '신규가입');
+            const discLabel = empDisc === 'select' ? '선택약정(25%요금할인)' : '공통지원금(단말할인)';
+            const instLabel = empInst === 0 ? '일시납' : `${empInst}개월할부`;
+
+            detailText = `[파트너스 임직원] ${dev.name} | ${joinLabel} | ${discLabel} | ${instLabel} | 월 ${fmt(finalWon)}원`;
+            renderMobileOut(dev.name, `${joinLabel} / ${discLabel} / ${instLabel}`, dev.price, totalDisc, principal, Math.round(devMonthly), Math.round(planMonthly), finalWon);
+        }
+
+        function calcFam() {
+            const devKey = document.getElementById('fam-device').value;
+            const planVal = Number(document.getElementById('fam-plan').value);
+            const dev = DB.devices[devKey];
+            if (!dev) return;
+
+            let totalDisc = dev.famExtra || 0;
+            if (famDisc === 'public') totalDisc += (dev[famType] || 0);
+
+            const principal = Math.max(0, dev.price - totalDisc);
+            let devMonthly = famInst === 24 ? (principal * 1.118) / 24 : (famInst === 36 ? (principal * 1.177) / 36 : 0);
+            let planMonthly = famDisc === 'select' ? planVal * 0.75 : planVal;
+
+            finalWon = Math.round(devMonthly + planMonthly);
+            const joinLabel = famType === 'mnp' ? '번호이동' : (famType === 'chg' ? '기기변경' : '신규가입');
+            const discLabel = famDisc === 'select' ? '선택약정(25%요금할인)' : '공통지원금(단말할인)';
+            const instLabel = famInst === 0 ? '일시납' : `${famInst}개월할부`;
+
+            detailText = `[파트너스 가족] ${dev.name} | ${joinLabel} | ${discLabel} | ${instLabel} | 월 ${fmt(finalWon)}원`;
+            renderMobileOut(dev.name, `${joinLabel} / ${discLabel} / ${instLabel}`, dev.price, totalDisc, principal, Math.round(devMonthly), Math.round(planMonthly), finalWon);
+        }
+
+        function renderMobileOut(n, c, base, disc, prin, devM, planM, finalP) {
+            document.getElementById('out-name').innerText = n;
+            document.getElementById('out-cond').innerText = c;
+            document.getElementById('out-base').innerText = `${fmt(base)} 원`;
+            document.getElementById('out-disc').innerText = `- ${fmt(disc)} 원`;
+            document.getElementById('out-prin').innerText = `${fmt(prin)} 원`;
+            document.getElementById('detail-dev').innerText = `월 ${fmt(devM)} 원`;
+            document.getElementById('detail-plan').innerText = `월 ${fmt(planM)} 원`;
+            document.getElementById('out-price').innerText = `${fmt(finalP)} 원/월`;
+            const mp = document.getElementById('mobile-price');
+            if (mp) mp.innerText = `${fmt(finalP)} 원/월`;
+        }
+
+        function calcHome() {
+            const netIdx = document.getElementById('home-speed').selectedIndex >= 0 ? document.getElementById('home-speed').selectedIndex : 0;
+            const netObj = DB.internet[netIdx] || { price: 22000, name: "인터넷 슬림 100M", empExtra: 400000 };
+            
+            const netPrice = Number(netObj.price || 0);
+            const tvPrice = Number(document.getElementById('home-tv').value || 0);
+            const stPrice = Number(document.getElementById('home-settop').value || 0);
+            const wfPrice = Number(document.getElementById('home-wifi').value || 0);
+
+            const giftMoney = Number(netObj.empExtra !== undefined ? netObj.empExtra : 400000);
+
+            finalWon = netPrice + tvPrice + stPrice + wfPrice;
+
+            const tvName = document.getElementById('home-tv').options[document.getElementById('home-tv').selectedIndex]?.text.split(' (')[0] || '';
+            const pkgTitle = `${netObj.name} + ${tvName}`;
+
+            detailText = `[파트너스 인터넷+TV] ${pkgTitle} | 3년약정 | 추가지원: ${fmt(giftMoney)}원 | 월 ${fmt(finalWon)}원`;
+
+            document.getElementById('home-out-name').innerText = pkgTitle;
+            document.getElementById('home-out-gift').innerText = `+ ${fmt(giftMoney)} 원 지급`;
+            document.getElementById('home-detail-net').innerText = `월 ${fmt(netPrice)} 원`;
+            document.getElementById('home-detail-tv').innerText = `월 ${fmt(tvPrice)} 원`;
+            document.getElementById('home-detail-st').innerText = `월 ${fmt(stPrice)} 원`;
+            document.getElementById('home-detail-wf').innerText = `월 ${fmt(wfPrice)} 원`;
+
+            document.getElementById('out-price').innerText = `${fmt(finalWon)} 원/월`;
+            const mp = document.getElementById('mobile-price');
+            if (mp) mp.innerText = `${fmt(finalWon)} 원/월`;
+        }
+
+        async function submitApply() {
+            const btn = document.getElementById('btn-apply');
+            const corp = document.getElementById('req-corp').value.trim();
+            const name = document.getElementById('req-name').value.trim();
+            const phone = document.getElementById('req-phone').value.trim();
+            const email = document.getElementById('req-email').value.trim();
+            if (!corp || !name || !phone) { alert("모든 필수 항목을 입력하세요."); return; }
+
+            btn.innerText = "전송 중..."; btn.disabled = true;
+            try {
+                await fetch(APPS_URL, {
+                    method: 'POST', mode: 'no-cors',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ action: "SUBMIT_APPLY", corp, name, phone, email })
+                });
+                alert(`파트너스 제휴 신청 완료: ${corp}\n검토 후 연락처(${phone})로 PASS를 안내해 드립니다.`);
+                toggleModal(false);
+            } catch (e) { alert("전송 중 오류가 발생했습니다."); } finally { btn.innerText = "파트너스 제휴 승인 요청 등록"; btn.disabled = false; }
+        }
+
+        async function submitLead() {
+            const name = document.getElementById('cust-name').value.trim();
+            const phone = document.getElementById('cust-phone').value.trim();
+            const btn = document.getElementById('btn-lead');
+            if (!name || !phone) { alert("신청자 성함과 연락처를 입력하세요."); return; }
+
+            btn.innerText = "전송 중..."; btn.disabled = true;
+            try {
+                await fetch(APPS_URL, {
+                    method: 'POST', mode: 'no-cors',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: "SUBMIT_LEAD",
+                        corp: sessionStorage.getItem('AUTH_CORP') || "미지정",
+                        category: curTab === 'home' ? '파트너스 인터넷+TV 결합' : (curTab === 'employee' ? '파트너스 임직원 휴대폰' : '파트너스 가족 휴대폰'),
+                        name: name, phone: phone,
+                        planDetails: detailText, price: `${fmt(finalWon)}원/월`
+                    })
+                });
+                alert(`견적 신청 완료: ${name} 고객님`);
+                document.getElementById('cust-name').value = '';
+                document.getElementById('cust-phone').value = '';
+            } catch (e) { alert("전송 중 오류가 발생했습니다."); } finally { btn.innerText = "공식 견적서 발송 및 상담 신청"; btn.disabled = false; }
+        }
+
+        window.handlePriceSync = function(response) {
+            if (response && response.success && response.data) {
+                DB = response.data;
+                renderUI();
+                const badge = document.getElementById('price-sync-status');
+                if (badge) badge.innerHTML = '<i class="fa-solid fa-cloud-check mr-1 text-emerald-500"></i>시트 실시간 연동됨';
+            }
+        };
+
+        function fetchPriceMasterJSONP() {
+            const script = document.createElement('script');
+            script.src = `${APPS_URL}?callback=handlePriceSync&t=${new Date().getTime()}`;
+            document.body.appendChild(script);
+        }
+
+        function renderUI() {
+            const dSel = document.getElementById('emp-device'), fdSel = document.getElementById('fam-device');
+            if (!dSel || !fdSel) return;
+
+            const prevD = dSel.value;
+            dSel.innerHTML = ''; fdSel.innerHTML = '';
+            for (let k in DB.devices) {
+                dSel.add(new Option(`${DB.devices[k].name} (출고가: ${fmt(DB.devices[k].price)}원)`, k));
+                fdSel.add(new Option(`${DB.devices[k].name} (출고가: ${fmt(DB.devices[k].price)}원)`, k));
+            }
+            if (prevD && DB.devices[prevD]) {
+                dSel.value = prevD; fdSel.value = prevD;
+            }
+
+            const pSel = document.getElementById('emp-plan'), fpSel = document.getElementById('fam-plan');
+            if (pSel && fpSel && pSel.options.length === 0) {
+                DB.plans.forEach((p, idx) => {
+                    const opt1 = new Option(`${p.name} (월 ${fmt(p.price)}원)`, p.price);
+                    const opt2 = new Option(`${p.name} (월 ${fmt(p.price)}원)`, p.price);
+                    if (idx === 2) opt1.selected = true;
+                    if (idx === 2) opt2.selected = true;
+                    pSel.add(opt1); fpSel.add(opt2);
+                });
+            }
+
+            const sSel = document.getElementById('home-speed');
+            if (sSel) {
+                const prevSpeedIdx = sSel.selectedIndex >= 0 ? sSel.selectedIndex : 0;
+                sSel.innerHTML = '';
+                DB.internet.forEach((i, idx) => {
+                    const opt = new Option(`${i.name} (월 ${fmt(i.price)}원)`, idx);
+                    sSel.add(opt);
+                });
+                if (sSel.options.length > prevSpeedIdx) sSel.selectedIndex = prevSpeedIdx;
+            }
+
+            const tvSel = document.getElementById('home-tv');
+            if (tvSel && tvSel.options.length === 0) {
+                DB.iptv.forEach((t, idx) => {
+                    const opt = new Option(`${t.name} (월 ${fmt(t.price)}원)`, t.price);
+                    if (idx === 0) opt.selected = true;
+                    tvSel.add(opt);
+                });
+            }
+
+            const stSel = document.getElementById('home-settop');
+            if (stSel && stSel.options.length === 0) {
+                DB.settop.forEach((s, idx) => {
+                    const opt = new Option(`${s.name} (월 ${fmt(s.price)}원)`, s.price);
+                    if (idx === 0) opt.selected = true;
+                    stSel.add(opt);
+                });
+            }
+
+            const wfSel = document.getElementById('home-wifi');
+            if (wfSel && wfSel.options.length === 0) {
+                DB.wifi.forEach((w, idx) => {
+                    const opt = new Option(`${w.name} (월 ${fmt(w.price)}원)`, w.price);
+                    if (idx === 0) opt.selected = true;
+                    wfSel.add(opt);
+                });
+            }
+
+            if (curTab === 'home') calcHome(); else calcEmp();
+        }
+
+        window.onload = function() {
+            renderUI();
+            fetchPriceMasterJSONP();
+            
+            const saved = sessionStorage.getItem('AUTH_CORP');
+            if (saved) {
+                document.getElementById('auth-gate').style.setProperty('display', 'none', 'important');
+                document.getElementById('logged-corp-badge').innerText = saved.includes('마스터') ? '관리자: jaeng2' : `파트너스: ${saved}`;
+            }
+        };
+    </script>
+</body>
+</html>
