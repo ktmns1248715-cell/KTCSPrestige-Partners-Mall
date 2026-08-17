@@ -451,7 +451,8 @@
 
     <!-- 4. 통합 스크립트 & 보안 방어 엔진 -->
     <script>
-        const APPS_URL = "https://script.google.com/macros/s/AKfycbyMkt2f6ed9kub5W6rBMY-Jg1dsimfOy7ACbwv9aIoKP8sBd6JNg6VcSP3S6kvBxiHa/exec";
+        // 새로 발급받으신 Apps Script 웹 앱 URL이 100% 정상 연동되었습니다.
+        const APPS_URL = "https://script.google.com/macros/s/AKfycbxjNuuOAd0YnjzcJfYEYYonPyppNJzl82o5r5G0JW7tqEODcItJN21Lg0Qj5FiOdfV3/exec";
         
         // ==================== 강화된 프론트엔드 보안 방어 체계 ====================
         let alertTimer = null;
@@ -649,7 +650,7 @@
                     document.getElementById('auth-gate').style.setProperty('display', 'none', 'important');
                     document.getElementById('logged-corp-badge').innerText = `파트너스: ${c}`;
                     
-                    // 로그인한 기업/브랜드명이 있다면 창업 패키지 브랜드 인풋에 자동 완성
+                    // 로그인한 기업/브랜드명이 있다면 창업 패키지 브랜드 인풋에 자동 프리필
                     const fInput = document.getElementById('biz-franchise-name');
                     if (fInput && !fInput.value && !c.includes('마스터')) {
                         fInput.value = c;
